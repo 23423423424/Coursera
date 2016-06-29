@@ -1,0 +1,1 @@
+Contains the notes for the data mining sequence.

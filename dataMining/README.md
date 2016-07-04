@@ -1,1 +1,3 @@
-Contains the notes for the data mining sequence.
+Contains notes
+https://www.coursera.org/learn/text-retrieval/home/welcome
+https://www.coursera.org/learn/text-mining/home/welcome

@@ -1,5 +1,5 @@
 package forcomp
-
+import forcomp._
 object Anagrams {
 
   /** A word is simply a `String`. */
@@ -62,7 +62,7 @@ object Anagrams {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = dictionary.groupBy(wordOccurrences)
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences.getOrElse(wordOccurrences(word),Nil)
+  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences.getOrElse(wordOccurrences(word), Nil)
 
   /**
    * Returns the list of all subsets of the occurrence list.
@@ -87,7 +87,15 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+    occurrences match {
+      case Nil => List(List())
+      case head :: tail => (for {
+        a <- combinations(tail)
+        range <- 0 to head._2
+      } yield if (range == 0) a else (head._1, range) :: a).toList
+    }
+  }
 
   /**
    * Subtracts occurrence list `y` from occurrence list `x`.
@@ -100,7 +108,13 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val yMap = y.toMap withDefaultValue 0
+    for {
+      (char, int) <- x
+      if (int - yMap(char) > 0)
+    } yield (char, int - yMap(char))
+  }
 
   /**
    * Returns a list of all anagram sentences of the given sentence.
@@ -143,5 +157,19 @@ object Anagrams {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def senAna(occurrences: Occurrences): List[Sentence] = {
+      occurrences match {
+        case Nil => List(List())
+        case _ => {
+          (for {
+            occurrencesCombinations <- combinations(occurrences)
+            words <- dictionaryByOccurrences(occurrencesCombinations)
+            remaining <- senAna(subtract(occurrences, occurrencesCombinations))
+          } yield words :: remaining)
+        }
+      }
+    }
+    senAna(sentenceOccurrences(sentence))
+  }
 }

@@ -1,2 +1,3 @@
-Contains the folders for the coursera courses.
-Obtained certificates in MachineLearning, crypto, and information retrieval.
+#Contains the folders for the coursera courses.
+#Paided for MachineLearning, crypto, and information retrieval. Obtained certificates in machinelearning, crypto, and information retrieval.
+
